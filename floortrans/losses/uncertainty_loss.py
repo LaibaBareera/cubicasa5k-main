@@ -1,16 +1,32 @@
 import torch
+import torch.nn.functional as F
 from torch.nn import Parameter, Module
 from torch.nn.functional import mse_loss, cross_entropy, interpolate
 import pandas as pd
 
 
 class UncertaintyLoss(Module):
-    """Loss for heatmap + room (wall) segmentation only; icon removed."""
+    """Loss for heatmap + room segmentation.
+
+    Room loss is the primary objective; heatmaps are a structural auxiliary
+    task that teaches wall/junction understanding and drives post-processing.
+
+    Args:
+        room_weight:  Multiplier applied to the room loss term.  Use > 1
+                      (e.g. 5.0) to prioritise room segmentation over the
+                      heatmap auxiliary task.
+        focal_gamma:  When > 0 the room loss uses Focal Loss instead of plain
+                      cross-entropy.  gamma=2 is the standard setting.
+        room_class_weights: 1-D tensor of per-class CE weights (shape
+                      [n_room_classes]) to handle class imbalance.
+    """
     def __init__(self, input_slice=[21, 12],
-                 target_slice=[21, 1], sub=0,  # 22 channels: heatmaps + room (no icon)
-                 cuda=True, mask=False, room_class_weights=None):
+                 target_slice=[21, 1], sub=0,
+                 cuda=True, mask=False,
+                 room_class_weights=None,
+                 room_weight=1.0,
+                 focal_gamma=0.0):
         super(UncertaintyLoss, self).__init__()
-        # input_slice: [heatmaps, rooms]; model may output 33 (no icon) or 44 (extra channels ignored)
         self.input_slice = input_slice
         self.target_slice = target_slice
         self.loss = None
@@ -19,11 +35,26 @@ class UncertaintyLoss(Module):
         self.mask = mask
         self.sub = sub
         self.cuda = cuda
-        # Optional: weight CE by class to improve rare room classes (e.g. Bath, Garage)
+        self.room_weight = room_weight
+        self.focal_gamma = focal_gamma
+        # Optional per-class weights for room cross-entropy
         self.room_class_weights = room_class_weights  # tensor of shape (n_room_classes,) or None
         # (2,) for backward compatibility with saved checkpoints; only [0] is used (room)
         self.log_vars = Parameter(torch.tensor([0.0, 0.0], requires_grad=True, dtype=torch.float32))
         self.log_vars_mse = Parameter(torch.zeros(input_slice[0], requires_grad=True, dtype=torch.float32))
+
+    def _room_loss(self, rooms_pred, rooms_target, weight):
+        """Cross-entropy or Focal Loss for room segmentation."""
+        if self.focal_gamma <= 0:
+            return cross_entropy(input=rooms_pred, target=rooms_target, weight=weight)
+
+        # Focal Loss: FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t)
+        # We fold class weights into alpha_t via reduction='none' + manual sum.
+        ce = cross_entropy(input=rooms_pred, target=rooms_target,
+                           weight=weight, reduction='none')
+        pt = torch.exp(-ce)  # probability of the correct class
+        focal = ((1 - pt) ** self.focal_gamma) * ce
+        return focal.mean()
 
     def forward(self, input, target):
         n, c, h, w = input.size()
@@ -34,36 +65,35 @@ class UncertaintyLoss(Module):
             target = target.squeeze(1)
 
         pred_arr = torch.split(input, self.input_slice, 1)
-        heatmap_pred, rooms_pred, *_ = pred_arr  # icon channels in pred_arr[2:] ignored if present
+        heatmap_pred, rooms_pred, *_ = pred_arr  # icon channels ignored if present
 
         target_arr = torch.split(target, self.target_slice, 1)
         heatmap_target, rooms_target = target_arr
 
-        # removing empty dimension if batch size is 1
         rooms_target = torch.squeeze(rooms_target, 1)
-
-        # Segmentation labels to correct type (keep on same device as target)
         rooms_target = rooms_target.long().contiguous() - self.sub
 
         weight = self.room_class_weights
         if weight is not None:
             weight = weight.to(rooms_pred.device)
-        self.loss_rooms_var = cross_entropy(
-            input=rooms_pred * torch.exp(-self.log_vars[0]), target=rooms_target, weight=weight
-        )  # log_vars[0] = room uncertainty
-        self.loss_rooms = cross_entropy(input=rooms_pred, target=rooms_target, weight=weight)
 
+        # Room loss (primary objective) ─ scaled by room_weight
+        self.loss_rooms_var = self.room_weight * self._room_loss(
+            rooms_pred * torch.exp(-self.log_vars[0]), rooms_target, weight
+        )
+        self.loss_rooms = self.room_weight * self._room_loss(rooms_pred, rooms_target, weight)
+
+        # Heatmap loss (structural auxiliary) ─ unscaled
         if self.mask:
             heatmap_mask = rooms_pred
-            self.loss_heatmap_var, self.vars_sum, self.loss_heatmap = self.homosced_heatmap_mse_loss_mask(heatmap_pred, heatmap_target, heatmap_mask, self.log_vars_mse)
+            self.loss_heatmap_var, self.vars_sum, self.loss_heatmap = \
+                self.homosced_heatmap_mse_loss_mask(heatmap_pred, heatmap_target, heatmap_mask, self.log_vars_mse)
         else:
             self.loss_heatmap_var = self.homosced_heatmap_mse_loss(heatmap_pred, heatmap_target, self.log_vars_mse)
             self.loss_heatmap = mse_loss(input=heatmap_pred, target=heatmap_target)
 
         self.loss = self.loss_rooms + self.loss_heatmap
-        # self.loss = self.loss_heatmap
         self.loss_var = self.loss_rooms_var + self.loss_heatmap_var
-        # self.loss_var = self.loss_heatmap_var
 
         return self.loss_var
 

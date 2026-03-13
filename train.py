@@ -66,16 +66,44 @@ def train(args, log_dir, writer, logger):
         num_workers = 8
 
     trainloader = data.DataLoader(train_set, batch_size=args.batch_size,
-                                  num_workers=0, shuffle=True, pin_memory=True)
+                                  num_workers=num_workers, shuffle=True, pin_memory=True)
     valloader = data.DataLoader(val_set, batch_size=1,
-                                num_workers=0, pin_memory=True)
+                                num_workers=num_workers, pin_memory=True)
 
     # Setup Model
     logging.info('Loading model...')
-    input_slice = [21, 12]  # model outputs 44; loss uses only heatmap+room (no icon)
+    input_slice = [21, 12]  # model outputs 33; loss uses heatmap+room only
+
+    # Class weights: inverse-frequency over the 12 room classes.
+    # Computed from CubiCasa5K statistics (Background & Wall dominate).
+    # fmt: off
+    ROOM_CLASS_FREQ = torch.tensor([
+        0.4536,  # 0 Background
+        0.0180,  # 1 Outdoor
+        0.2450,  # 2 Wall
+        0.0380,  # 3 Kitchen
+        0.0900,  # 4 Dining/Living
+        0.0600,  # 5 Bedroom
+        0.0230,  # 6 Bath
+        0.0350,  # 7 Hallway/Entry
+        0.0070,  # 8 Railing
+        0.0180,  # 9 Closet/Storage
+        0.0060,  # 10 Garage
+        0.0064,  # 11 Other rooms
+    ], dtype=torch.float32)
+    # fmt: on
+    room_class_weights = (1.0 / ROOM_CLASS_FREQ.clamp(min=1e-6))
+    room_class_weights = room_class_weights / room_class_weights.mean()  # normalise
+
+    if not args.room_class_weights:
+        room_class_weights = None  # disabled by default; enable with --room-class-weights
+
     if args.arch == 'hg_furukawa_original':
         model = get_model(args.arch, 51)
-        criterion = UncertaintyLoss(input_slice=input_slice)
+        criterion = UncertaintyLoss(input_slice=input_slice,
+                                    room_weight=args.room_weight,
+                                    focal_gamma=args.focal_gamma,
+                                    room_class_weights=room_class_weights)
         if args.furukawa_weights:
             logger.info("Loading furukawa model weights from checkpoint '{}'".format(args.furukawa_weights))
             checkpoint = torch.load(args.furukawa_weights, weights_only=False, map_location='cpu')
@@ -99,7 +127,10 @@ def train(args, log_dir, writer, logger):
             nn.init.constant_(m.bias, 0)
     else:
         model = get_model(args.arch, args.n_classes)
-        criterion = UncertaintyLoss(input_slice=input_slice)
+        criterion = UncertaintyLoss(input_slice=input_slice,
+                                    room_weight=args.room_weight,
+                                    focal_gamma=args.focal_gamma,
+                                    room_class_weights=room_class_weights)
 
     model = model.to(device)
     criterion = criterion.to(device)
@@ -110,7 +141,7 @@ def train(args, log_dir, writer, logger):
     writer.add_graph(model, dummy)
 
     params = [{'params': model.parameters(), 'lr': args.l_rate},
-              {'params': criterion.parameters(), 'lr': args.l_rate}]
+              {'params': criterion.parameters(), 'lr': args.l_rate_var}]
     if args.optimizer == 'adam-patience':
         optimizer = torch.optim.Adam(params, eps=1e-8, betas=(0.9, 0.999))
         scheduler = ReduceLROnPlateau(optimizer, 'min', patience=args.patience, factor=0.5)
@@ -145,7 +176,8 @@ def train(args, log_dir, writer, logger):
             if not args.new_hyperparams:
                 optimizer.load_state_dict(checkpoint['optimizer_state'])
                 logger.info("Using old optimizer state.")
-            logger.info("Loaded checkpoint '{}' (epoch {})".format(args.weights, checkpoint['epoch']))
+            start_epoch = checkpoint.get('epoch', 0)
+            logger.info("Loaded checkpoint '{}' (epoch {})".format(args.weights, start_epoch))
         else:
             logger.info("No checkpoint found at '{}'".format(args.weights)) 
 
@@ -161,6 +193,7 @@ def train(args, log_dir, writer, logger):
             images = samples['image'].to(device, non_blocking=True)
             labels = samples['label'].to(device, non_blocking=True)
 
+            optimizer.zero_grad()
             outputs = model(images)
 
             loss = criterion(outputs, labels)
@@ -169,18 +202,19 @@ def train(args, log_dir, writer, logger):
             variances = pd.concat([variances, criterion.get_var()], ignore_index=True)
             ss = pd.concat([ss, criterion.get_s()], ignore_index=True)
 
-            optimizer.zero_grad()
             loss.backward()
+            if args.grad_clip > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
             optimizer.step()
 
         avg_loss = np.mean(lossess)
-        avg_loss = np.inf
         loss = losses.mean()
         variance = variances.mean()
         s = ss.mean()
 
         logging.info("Epoch [%d/%d] Loss: %.4f" % (epoch+1, args.n_epoch, avg_loss))
 
+        writer.add_scalar('training/epoch_loss', avg_loss, global_step=1+epoch)
         writer.add_scalars('training/loss', loss, global_step=1+epoch)
         writer.add_scalars('training/variance', variance, global_step=1+epoch)
         writer.add_scalars('training/s', s, global_step=1+epoch)
@@ -199,7 +233,15 @@ def train(args, log_dir, writer, logger):
                 labels_val = samples_val['label'].to(device, non_blocking=True)
 
                 outputs = model(images_val)
-                labels_val = F.interpolate(labels_val, size=outputs.shape[2:], mode='bilinear', align_corners=False)
+                out_size = outputs.shape[2:]
+                # Heatmap channels (0-20) are continuous → bilinear is correct.
+                # Room channel (21) is categorical → must use nearest to avoid
+                # fractional class indices that corrupt the cross-entropy target.
+                heatmaps_val_r = F.interpolate(labels_val[:, :21], size=out_size,
+                                               mode='bilinear', align_corners=False)
+                rooms_val_r = F.interpolate(labels_val[:, 21:], size=out_size,
+                                            mode='nearest')
+                labels_val = torch.cat([heatmaps_val_r, rooms_val_r], dim=1)
                 loss = criterion(outputs, labels_val)
 
                 room_pred = outputs[0, input_slice[0]:input_slice[0]+input_slice[1]].argmax(0).data.cpu().numpy()
@@ -233,7 +275,7 @@ def train(args, log_dir, writer, logger):
                     optimizer.param_groups[i]['lr'] = p['lr'] * 0.1
                 no_improvement = 0
 
-        elif args.optimizer == 'sgd' or 'adam-scheduler':
+        elif args.optimizer in ('sgd', 'adam-scheduler'):
             scheduler.step(epoch+1)
 
         val_variance = val_variances.mean()
@@ -354,7 +396,7 @@ if __name__ == '__main__':
     parser.add_argument('--data-path', nargs='?', type=str, default='data/cubicasa5k/',
                         help='Path to data directory')
     parser.add_argument('--n-classes', nargs='?', type=int, default=33,
-                        help='# of the epochs')
+                        help='Number of output classes (e.g. room types)')
     parser.add_argument('--n-epoch', nargs='?', type=int, default=1000,
                         help='# of the epochs')
     parser.add_argument('--batch-size', nargs='?', type=int, default=26,
@@ -389,6 +431,15 @@ if __name__ == '__main__':
     parser.add_argument('--scale', nargs='?', type=bool,
                         default=False, const=True,
                         help='Rescale to 256x256 augmentation.')
+    parser.add_argument('--grad-clip', nargs='?', type=float, default=0,
+                        help='Gradient clipping max norm (0 = disabled).')
+    parser.add_argument('--room-weight', nargs='?', type=float, default=1.0,
+                        help='Multiplier on the room segmentation loss (e.g. 5.0 to prioritise rooms over heatmaps).')
+    parser.add_argument('--focal-gamma', nargs='?', type=float, default=0.0,
+                        help='Focal loss gamma for room loss (0 = plain cross-entropy, 2 = standard focal).')
+    parser.add_argument('--room-class-weights', nargs='?', type=bool,
+                        default=False, const=True,
+                        help='Apply inverse-frequency class weights to the room loss.')
     args = parser.parse_args()
 
     log_dir = args.log_path + '/' + time_stamp + '/'
