@@ -1,0 +1,21 @@
+{
+    "arch": "hg_furukawa_original",
+    "optimizer": "adam-patience-previous-best",
+    "data_path": "data/cubicasa5k/",
+    "n_classes": 33,
+    "n_epoch": 1000,
+    "batch_size": 26,
+    "image_size": 256,
+    "l_rate": 0.001,
+    "l_rate_var": 0.001,
+    "l_rate_drop": 200,
+    "patience": 50,
+    "feature_scale": 1,
+    "weights": "runs_cubi/2026-03-12-18:52:51/model_best_val_loss_var.pkl",
+    "furukawa_weights": null,
+    "new_hyperparams": false,
+    "log_path": "runs_cubi/",
+    "debug": false,
+    "plot_samples": false,
+    "scale": false
+}

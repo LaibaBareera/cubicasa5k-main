@@ -1,0 +1,369 @@
+2026-03-13 04:07:18,957 - train - INFO - Loading model and optimizer from checkpoint 'runs_cubi/2026-03-12-18:52:51/model_best_val_loss_var.pkl'
+2026-03-13 04:07:19,340 - train - INFO - Using old optimizer state.
+2026-03-13 04:07:19,340 - train - INFO - Loaded checkpoint 'runs_cubi/2026-03-12-18:52:51/model_best_val_loss_var.pkl' (epoch 3)
+2026-03-13 04:16:32,438 - train - INFO - val_loss: total loss                     1.953998
+room loss                      1.953331
+heatmap loss                   0.000666
+total loss with variance      11.027054
+room loss with variance        1.955849
+heatmap loss with variance     9.071205
+dtype: float64
+2026-03-13 04:16:32,490 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 04:16:33,189 - train - INFO - Best validation loss found saving model...
+2026-03-13 04:16:34,030 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 04:25:29,853 - train - INFO - val_loss: total loss                    1.567997
+room loss                     1.567329
+heatmap loss                  0.000668
+total loss with variance      9.701052
+room loss with variance       1.579857
+heatmap loss with variance    8.121195
+dtype: float64
+2026-03-13 04:25:29,873 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 04:25:36,190 - train - INFO - Best validation loss found saving model...
+2026-03-13 04:25:37,714 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 04:34:39,428 - train - INFO - val_loss: total loss                    1.962804
+room loss                     1.962144
+heatmap loss                  0.000661
+total loss with variance      9.182711
+room loss with variance       1.893015
+heatmap loss with variance    7.289696
+dtype: float64
+2026-03-13 04:34:39,430 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 04:43:48,482 - train - INFO - val_loss: total loss                    1.628286
+room loss                     1.627633
+heatmap loss                  0.000653
+total loss with variance      8.198132
+room loss with variance       1.637362
+heatmap loss with variance    6.560770
+dtype: float64
+2026-03-13 04:43:48,508 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 04:53:12,297 - train - INFO - val_loss: total loss                    1.738265
+room loss                     1.737609
+heatmap loss                  0.000656
+total loss with variance      7.675624
+room loss with variance       1.754118
+heatmap loss with variance    5.921506
+dtype: float64
+2026-03-13 04:53:12,322 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:02:27,445 - train - INFO - val_loss: total loss                    1.652929
+room loss                     1.652279
+heatmap loss                  0.000650
+total loss with variance      7.026087
+room loss with variance       1.667520
+heatmap loss with variance    5.358568
+dtype: float64
+2026-03-13 05:02:27,446 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:11:49,585 - train - INFO - val_loss: total loss                    1.502217
+room loss                     1.501569
+heatmap loss                  0.000648
+total loss with variance      6.364875
+room loss with variance       1.502427
+heatmap loss with variance    4.862449
+dtype: float64
+2026-03-13 05:11:49,613 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:11:50,949 - train - INFO - Best validation loss found saving model...
+2026-03-13 05:11:52,145 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 05:21:17,035 - train - INFO - val_loss: total loss                    1.955172
+room loss                     1.954517
+heatmap loss                  0.000655
+total loss with variance      6.410934
+room loss with variance       1.985919
+heatmap loss with variance    4.425015
+dtype: float64
+2026-03-13 05:30:35,400 - train - INFO - val_loss: total loss                    1.559292
+room loss                     1.558646
+heatmap loss                  0.000646
+total loss with variance      5.609929
+room loss with variance       1.573576
+heatmap loss with variance    4.036353
+dtype: float64
+2026-03-13 05:30:35,408 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:39:46,119 - train - INFO - val_loss: total loss                    1.502635
+room loss                     1.501989
+heatmap loss                  0.000646
+total loss with variance      5.188422
+room loss with variance       1.496241
+heatmap loss with variance    3.692181
+dtype: float64
+2026-03-13 05:39:46,141 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:49:00,717 - train - INFO - val_loss: total loss                    1.555153
+room loss                     1.554508
+heatmap loss                  0.000645
+total loss with variance      4.911022
+room loss with variance       1.525068
+heatmap loss with variance    3.385954
+dtype: float64
+2026-03-13 05:49:00,738 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:58:16,036 - train - INFO - val_loss: total loss                    1.399057
+room loss                     1.398412
+heatmap loss                  0.000645
+total loss with variance      4.519416
+room loss with variance       1.405868
+heatmap loss with variance    3.113548
+dtype: float64
+2026-03-13 05:58:16,057 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 05:58:16,515 - train - INFO - Best validation loss found saving model...
+2026-03-13 05:58:16,760 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 06:07:32,981 - train - INFO - val_loss: total loss                    1.516679
+room loss                     1.516032
+heatmap loss                  0.000648
+total loss with variance      4.439895
+room loss with variance       1.569001
+heatmap loss with variance    2.870894
+dtype: float64
+2026-03-13 06:07:32,983 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 06:07:33,352 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 06:16:52,678 - train - INFO - val_loss: total loss                    1.414831
+room loss                     1.414188
+heatmap loss                  0.000643
+total loss with variance      4.106049
+room loss with variance       1.452849
+heatmap loss with variance    2.653199
+dtype: float64
+2026-03-13 06:16:52,686 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 06:26:26,815 - train - INFO - val_loss: total loss                    1.474945
+room loss                     1.474303
+heatmap loss                  0.000642
+total loss with variance      3.926663
+room loss with variance       1.467747
+heatmap loss with variance    2.458916
+dtype: float64
+2026-03-13 06:26:26,816 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 06:35:55,727 - train - INFO - val_loss: total loss                    1.355186
+room loss                     1.354545
+heatmap loss                  0.000641
+total loss with variance      3.635056
+room loss with variance       1.350247
+heatmap loss with variance    2.284810
+dtype: float64
+2026-03-13 06:35:55,736 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 06:35:56,309 - train - INFO - Best validation loss found saving model...
+2026-03-13 06:45:31,265 - train - INFO - val_loss: total loss                    1.579274
+room loss                     1.578631
+heatmap loss                  0.000643
+total loss with variance      3.728592
+room loss with variance       1.598966
+heatmap loss with variance    2.129627
+dtype: float64
+2026-03-13 06:55:01,040 - train - INFO - val_loss: total loss                    1.393384
+room loss                     1.392744
+heatmap loss                  0.000639
+total loss with variance      3.363339
+room loss with variance       1.373960
+heatmap loss with variance    1.989379
+dtype: float64
+2026-03-13 06:55:01,057 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 07:04:22,507 - train - INFO - val_loss: total loss                    1.406024
+room loss                     1.405384
+heatmap loss                  0.000640
+total loss with variance      3.261880
+room loss with variance       1.397092
+heatmap loss with variance    1.864788
+dtype: float64
+2026-03-13 07:04:22,509 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 07:13:39,181 - train - INFO - val_loss: total loss                    1.732651
+room loss                     1.732007
+heatmap loss                  0.000645
+total loss with variance      3.500941
+room loss with variance       1.746799
+heatmap loss with variance    1.754142
+dtype: float64
+2026-03-13 07:22:50,007 - train - INFO - val_loss: total loss                    1.553303
+room loss                     1.552663
+heatmap loss                  0.000640
+total loss with variance      3.178664
+room loss with variance       1.525716
+heatmap loss with variance    1.652947
+dtype: float64
+2026-03-13 07:22:50,031 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 07:32:11,254 - train - INFO - val_loss: total loss                    1.437803
+room loss                     1.437164
+heatmap loss                  0.000640
+total loss with variance      3.012545
+room loss with variance       1.449118
+heatmap loss with variance    1.563427
+dtype: float64
+2026-03-13 07:32:11,257 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 07:41:22,529 - train - INFO - val_loss: total loss                    1.473107
+room loss                     1.472467
+heatmap loss                  0.000641
+total loss with variance      2.961777
+room loss with variance       1.477786
+heatmap loss with variance    1.483990
+dtype: float64
+2026-03-13 07:41:22,553 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 07:50:42,145 - train - INFO - val_loss: total loss                    1.641881
+room loss                     1.641238
+heatmap loss                  0.000642
+total loss with variance      3.068162
+room loss with variance       1.654675
+heatmap loss with variance    1.413487
+dtype: float64
+2026-03-13 08:00:06,552 - train - INFO - val_loss: total loss                    1.394369
+room loss                     1.393734
+heatmap loss                  0.000635
+total loss with variance      2.771130
+room loss with variance       1.423288
+heatmap loss with variance    1.347842
+dtype: float64
+2026-03-13 08:00:06,570 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 08:00:07,300 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 08:09:35,184 - train - INFO - val_loss: total loss                    1.387216
+room loss                     1.386582
+heatmap loss                  0.000634
+total loss with variance      2.732438
+room loss with variance       1.441007
+heatmap loss with variance    1.291431
+dtype: float64
+2026-03-13 08:09:35,186 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 08:18:58,786 - train - INFO - val_loss: total loss                    1.823260
+room loss                     1.822617
+heatmap loss                  0.000643
+total loss with variance      3.114251
+room loss with variance       1.869290
+heatmap loss with variance    1.244961
+dtype: float64
+2026-03-13 08:28:18,482 - train - INFO - val_loss: total loss                    1.311866
+room loss                     1.311234
+heatmap loss                  0.000632
+total loss with variance      2.497289
+room loss with variance       1.300330
+heatmap loss with variance    1.196959
+dtype: float64
+2026-03-13 08:28:18,508 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 08:28:19,138 - train - INFO - Best validation loss found saving model...
+2026-03-13 08:37:30,624 - train - INFO - val_loss: total loss                    1.380696
+room loss                     1.380065
+heatmap loss                  0.000631
+total loss with variance      2.497392
+room loss with variance       1.339416
+heatmap loss with variance    1.157976
+dtype: float64
+2026-03-13 08:46:35,394 - train - INFO - val_loss: total loss                    1.244585
+room loss                     1.243954
+heatmap loss                  0.000630
+total loss with variance      2.400883
+room loss with variance       1.276666
+heatmap loss with variance    1.124216
+dtype: float64
+2026-03-13 08:46:35,396 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 08:46:36,015 - train - INFO - Best validation loss found saving model...
+2026-03-13 08:46:38,188 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 08:55:49,108 - train - INFO - val_loss: total loss                    1.358498
+room loss                     1.357877
+heatmap loss                  0.000621
+total loss with variance      2.381814
+room loss with variance       1.291245
+heatmap loss with variance    1.090570
+dtype: float64
+2026-03-13 08:55:49,109 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 09:05:09,591 - train - INFO - val_loss: total loss                    1.362194
+room loss                     1.361576
+heatmap loss                  0.000617
+total loss with variance      2.372757
+room loss with variance       1.309847
+heatmap loss with variance    1.062909
+dtype: float64
+2026-03-13 09:05:09,601 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 09:14:39,864 - train - INFO - val_loss: total loss                    1.454202
+room loss                     1.453586
+heatmap loss                  0.000616
+total loss with variance      2.465406
+room loss with variance       1.425734
+heatmap loss with variance    1.039672
+dtype: float64
+2026-03-13 09:24:01,062 - train - INFO - val_loss: total loss                    1.324343
+room loss                     1.323735
+heatmap loss                  0.000608
+total loss with variance      2.311541
+room loss with variance       1.294824
+heatmap loss with variance    1.016717
+dtype: float64
+2026-03-13 09:24:01,065 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 09:24:01,631 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 09:33:31,719 - train - INFO - val_loss: total loss                    1.413256
+room loss                     1.412642
+heatmap loss                  0.000614
+total loss with variance      2.356503
+room loss with variance       1.353861
+heatmap loss with variance    1.002642
+dtype: float64
+2026-03-13 09:42:53,180 - train - INFO - val_loss: total loss                    1.347824
+room loss                     1.347227
+heatmap loss                  0.000597
+total loss with variance      2.386162
+room loss with variance       1.406104
+heatmap loss with variance    0.980058
+dtype: float64
+2026-03-13 09:42:53,182 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 09:52:15,186 - train - INFO - val_loss: total loss                    1.328060
+room loss                     1.327459
+heatmap loss                  0.000601
+total loss with variance      2.248836
+room loss with variance       1.280058
+heatmap loss with variance    0.968778
+dtype: float64
+2026-03-13 09:52:15,188 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 10:01:26,559 - train - INFO - val_loss: total loss                    1.297303
+room loss                     1.296722
+heatmap loss                  0.000582
+total loss with variance      2.241040
+room loss with variance       1.293242
+heatmap loss with variance    0.947798
+dtype: float64
+2026-03-13 10:01:26,561 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 10:01:27,146 - train - INFO - Best validation room accuracy found saving model...
+2026-03-13 10:10:36,937 - train - INFO - val_loss: total loss                    1.260353
+room loss                     1.259765
+heatmap loss                  0.000587
+total loss with variance      2.206478
+room loss with variance       1.264048
+heatmap loss with variance    0.942430
+dtype: float64
+2026-03-13 10:10:36,959 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 10:19:55,978 - train - INFO - val_loss: total loss                    1.781194
+room loss                     1.780556
+heatmap loss                  0.000638
+total loss with variance      2.794064
+room loss with variance       1.829298
+heatmap loss with variance    0.964766
+dtype: float64
+2026-03-13 10:29:31,345 - train - INFO - val_loss: total loss                    1.232889
+room loss                     1.232313
+heatmap loss                  0.000576
+total loss with variance      2.137244
+room loss with variance       1.216366
+heatmap loss with variance    0.920879
+dtype: float64
+2026-03-13 10:29:31,347 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 10:29:31,926 - train - INFO - Best validation loss found saving model...
+2026-03-13 10:39:36,963 - train - INFO - val_loss: total loss                    1.337684
+room loss                     1.337111
+heatmap loss                  0.000573
+total loss with variance      2.274432
+room loss with variance       1.358530
+heatmap loss with variance    0.915902
+dtype: float64
+2026-03-13 10:49:00,178 - train - INFO - val_loss: total loss                    1.223703
+room loss                     1.223138
+heatmap loss                  0.000565
+total loss with variance      2.124782
+room loss with variance       1.218128
+heatmap loss with variance    0.906654
+dtype: float64
+2026-03-13 10:49:00,180 - train - INFO - Best validation loss with variance found saving model...
+2026-03-13 10:49:00,943 - train - INFO - Best validation loss found saving model...
+2026-03-13 10:58:09,548 - train - INFO - val_loss: total loss                    2.500285
+room loss                     2.499640
+heatmap loss                  0.000645
+total loss with variance      2.989039
+room loss with variance       2.035914
+heatmap loss with variance    0.953125
+dtype: float64
+2026-03-13 11:06:53,929 - train - INFO - val_loss: total loss                    1.740176
+room loss                     1.739540
+heatmap loss                  0.000635
+total loss with variance      2.758655
+room loss with variance       1.813275
+heatmap loss with variance    0.945380
+dtype: float64
