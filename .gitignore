@@ -12,7 +12,7 @@ __pycache__/
 
 # Model checkpoints (large binary files)
 *.pkl
-*.pth
+
 
 # Training run outputs
 runs_cubi/*/
